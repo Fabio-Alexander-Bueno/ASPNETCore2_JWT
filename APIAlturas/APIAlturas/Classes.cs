@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace APIAlturas
@@ -18,18 +19,15 @@ namespace APIAlturas
 
     public class SigningConfigurations
     {
-        public SecurityKey Key { get; }
-        public SigningCredentials SigningCredentials { get; }
-
-        public SigningConfigurations()
+        public SigningConfigurations(string keyValue)
         {
-            using (var provider = new RSACryptoServiceProvider(2048))
-            {
-                Key = new RsaSecurityKey(provider.ExportParameters(true));
-            }
-
-            SigningCredentials = new SigningCredentials(
-                Key, SecurityAlgorithms.RsaSha256Signature);
+            Key = keyValue;
         }
+
+        public SecurityKey SecurityKey => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
+
+        public SigningCredentials SigningCredentials => new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha512);
+
+        string Key { get; }
     }
 }

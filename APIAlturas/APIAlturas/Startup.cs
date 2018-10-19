@@ -22,7 +22,7 @@ namespace APIAlturas
         {
             services.AddTransient<UsersDAO>();
 
-            var signingConfigurations = new SigningConfigurations();
+            var signingConfigurations = new SigningConfigurations(Guid.NewGuid().ToString());
             services.AddSingleton(signingConfigurations);
 
             var tokenConfigurations = new TokenConfigurations();
@@ -39,7 +39,7 @@ namespace APIAlturas
             }).AddJwtBearer(bearerOptions =>
             {
                 var paramsValidation = bearerOptions.TokenValidationParameters;
-                paramsValidation.IssuerSigningKey = signingConfigurations.Key;
+                paramsValidation.IssuerSigningKey = signingConfigurations.SecurityKey;
                 paramsValidation.ValidAudience = tokenConfigurations.Audience;
                 paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
 
